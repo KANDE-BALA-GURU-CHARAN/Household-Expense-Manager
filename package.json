@@ -8,6 +8,7 @@
     "dev": "vite --port=3000 --host=0.0.0.0",
     "prebuild": "[ -d node_modules/.bin ] || bun install || npm install",
     "build": "vite build",
+    "standalone": "npm run build && node scripts/create-standalone.mjs",
     "preview": "vite preview",
     "prelint": "[ -d node_modules/.bin ] || bun install || npm install",
     "lint": "tsc --noEmit"

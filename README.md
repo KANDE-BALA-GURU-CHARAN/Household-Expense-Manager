@@ -107,6 +107,19 @@ npm run preview
 Use one package manager consistently. The repository includes a Bun lockfile,
 so Bun may be used instead of npm if preferred.
 
+### Create the standalone file
+
+To create a single HTML file that can be shared and opened directly:
+
+```bash
+npm run standalone
+```
+
+The generated file is `release/hem-standalone.html`. It contains the built
+application JavaScript and CSS in one file. Local browser storage works, but
+optional server or Firebase synchronization still requires its backend
+configuration.
+
 ## Available scripts
 
 | Command | Purpose |
@@ -115,6 +128,7 @@ so Bun may be used instead of npm if preferred.
 | `npm run dev` | Start the Vite development server |
 | `npm run lint` | Run the TypeScript no-emit check |
 | `npm run build` | Create the production build |
+| `npm run standalone` | Create the single-file HTML release |
 | `npm run preview` | Preview the production build |
 
 ## Data and security
