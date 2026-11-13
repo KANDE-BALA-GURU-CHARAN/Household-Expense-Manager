@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0F2A31">
+  <script>
+    (function () {
+      var ids = ['hem-ledger','google-calendar','lavender-press','newsprint','night-edition','gazette-mono','swiss-poster','forest-ochre','riso-pastel'];
+      var t = 'hem-ledger';
+      try {
+        var s = localStorage.getItem('hem.theme.v1');
+        if (ids.indexOf(s) > -1) t = s;
+      } catch (e) {}
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <title>H ∈ M – Household Financial Intelligence &amp; Expense Manager</title>
+  <meta name="description" content="H ∈ M – Household Expense Manager brings income, expenses, budgets, savings, loans, and bill reminders together in one editorial financial intelligence workspace.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="H ∈ M">
+  <meta property="og:title" content="H ∈ M – Household Financial Intelligence &amp; Expense Manager">
+  <meta property="og:description" content="H ∈ M – Household Expense Manager brings income, expenses, budgets, savings, loans, and bill reminders together in one editorial financial intelligence workspace.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230F2A31'/%3E%3Crect x='7' y='15' width='4' height='8' fill='%23FFFFFF' opacity='.75'/%3E%3Crect x='14' y='11' width='4' height='12' fill='%23FFFFFF' opacity='.9'/%3E%3Crect x='21' y='7' width='4' height='16' fill='%23FFFFFF'/%3E%3Crect x='7' y='25' width='18' height='2.5' fill='%231D7A5B'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Text:wght@400;500;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to financial ledger</a>
+
+  <!-- Boot splash -->
+  <div id="boot" class="boot" role="status" aria-live="polite">
+    <div class="boot-inner">
+      <div class="mark">
+        <span class="mark-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="mark-word">H ∈ M</span>
+      </div>
+      <div class="boot-spin" aria-hidden="true"></div>
+      <p id="bootMsg" class="mono-meta" style="color:rgba(255,255,255,0.85);">Connecting household ledger…</p>
+    </div>
+  </div>
+
+  <!-- Auth celebration burst -->
+  <div id="burst" class="burst" hidden>
+    <div class="burst-card">
+      <div class="burst-check" aria-hidden="true">✓</div>
+      <h2 id="burstTitle" style="margin:0 0 6px;font-family:var(--font-display);font-weight:500;letter-spacing:-0.015em;font-size:26px;">Ledger ready</h2>
+      <p id="burstSub" class="body-single"></p>
+    </div>
+  </div>
+
+  <!-- Recovery Key Vault -->
+  <div id="vault" class="vault" hidden role="dialog" aria-modal="true" aria-labelledby="vaultTitle">
+    <div class="vault-card">
+      <p class="micro-upper">End-to-End Encrypted Recovery Key</p>
+      <h2 id="vaultTitle" style="margin:6px 0 8px;font-family:var(--font-display);font-weight:500;letter-spacing:-0.015em;font-size:26px;">Save your household vault key</h2>
+      <p class="body-single">Store this 30-character key somewhere safe. If you forget your password later, this is the only way to decrypt your household records.</p>
+      <code id="vaultKey" class="vault-code"></code>
+      <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">
+        <button id="vaultCopy" type="button" class="btn ghost">Copy key</button>
+        <button id="vaultDone" type="button" class="btn">I saved it — continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split-screen Auth Gate -->
+  <section id="gate" class="gate" hidden aria-label="Household authentication">
+    <div class="gate-brand">
+      <div>
+        <div class="mark" style="color:#FFFFFF;">
+          <span class="mark-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="mark-word">H ∈ M</span>
+        </div>
+        <p class="micro-upper" style="color:rgba(255,255,255,0.72);margin-top:20px;">Household Financial Intelligence</p>
+        <h1 class="gate-hero-title">Where household money movement becomes clear.</h1>
+        <p style="font-size:15.5px;line-height:1.55;max-width:46ch;opacity:0.9;">H belongs to M — track family income, living expenses, loan EMIs, mutual funds, and upcoming bills together in one editorial workspace.</p>
+      </div>
+      <div class="gate-stats">
+        <div>
+          <span class="gate-stat-val">10</span>
+          <span class="gate-stat-lbl">Analytical spreads</span>
+        </div>
+        <div>
+          <span class="gate-stat-val">9</span>
+          <span class="gate-stat-lbl">Pivot reports</span>
+        </div>
+        <div>
+          <span class="gate-stat-val">₹ / XLSX</span>
+          <span class="gate-stat-lbl">Import &amp; export</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gate-panel">
+      <div class="gate-card">
+        <div id="gateBanner" class="gate-notice" hidden>
+          <strong id="gateBannerTitle"></strong>
+          <div id="gateBannerSub" style="margin-top:2px;"></div>
+        </div>
+
+        <div id="gTabs" class="gate-tabs" role="group" aria-label="Authentication mode">
+          <button type="button" data-mode="signin" aria-pressed="true">Sign in</button>
+          <button type="button" data-mode="create" aria-pressed="false">Create</button>
+          <button type="button" data-mode="join" aria-pressed="false">Join</button>
+        </div>
+
+        <h2 id="gateTitle" style="margin:0 0 6px;font-family:var(--font-display);font-weight:500;letter-spacing:-0.015em;font-size:26px;">Sign in to H ∈ M</h2>
+        <p id="gateNote" class="body-single" style="margin-bottom:14px;"></p>
+
+        <div id="gateNotice" class="gate-notice" hidden></div>
+        <div id="gateErr" class="gate-err" hidden role="alert"></div>
+
+        <form id="gateForm" novalidate>
+          <div class="field">
+            <label for="gEmail">Email address</label>
+            <input id="gEmail" type="email" autocomplete="email" placeholder="syam@household.in" required>
+          </div>
+          <div class="field">
+            <label for="gPw">Password</label>
+            <div class="pw-wrap">
+              <input id="gPw" type="password" autocomplete="current-password" placeholder="At least 6 characters" required>
+              <button type="button" class="pw-peek" data-peek="gPw" aria-pressed="false">Show</button>
+            </div>
+          </div>
+          <div id="rowPw2" class="field" hidden>
+            <label for="gPw2">Confirm password</label>
+            <div class="pw-wrap">
+              <input id="gPw2" type="password" autocomplete="new-password" placeholder="Repeat password">
+              <button type="button" class="pw-peek" data-peek="gPw2" aria-pressed="false">Show</button>
+            </div>
+          </div>
+          <div id="rowName" class="field" hidden>
+            <label for="gName">Your name (e.g. SYAM)</label>
+            <input id="gName" type="text" placeholder="SYAM">
+          </div>
+          <div id="rowHouse" class="field" hidden>
+            <label for="gHouse">Household name</label>
+            <input id="gHouse" type="text" placeholder="Family Ledger 2026">
+          </div>
+          <div id="rowCode" class="field" hidden>
+            <label for="gCode">Join code (required for E2EE invites)</label>
+            <input id="gCode" type="text" placeholder="XXXXX-XXXXX-XXXXX-XXXXX">
+          </div>
+          <div id="rowSeed" class="field" hidden>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input id="gSeed" type="checkbox" checked style="width:auto;min-height:auto;">
+              <span>Preload August 2026 sample household (49 transactions)</span>
+            </label>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;">
+            <label style="display:flex;align-items:center;gap:7px;font-size:12.5px;cursor:pointer;">
+              <input id="gKeep" type="checkbox" checked style="width:auto;min-height:auto;">
+              <span>Keep me signed in</span>
+            </label>
+            <button id="gForgot" type="button" class="btn sm ghost">Forgot password?</button>
+          </div>
+
+          <button id="gSub" type="submit" class="btn" style="width:100%;">Open ledger →</button>
+        </form>
+
+        <!-- Recovery / Password Reset box -->
+        <div id="gRecoveryBox" hidden style="margin-top:14px;padding:12px;border:1px solid var(--rule);border-radius:var(--radius);background:var(--paper);">
+          <p class="micro-upper" style="margin:0 0 8px;">Password Recovery</p>
+          <div id="gRecKeyRow" class="field">
+            <label for="gRecKey">30-character recovery key</label>
+            <input id="gRecKey" type="text" placeholder="XXXXX-XXXXX-...">
+          </div>
+          <div class="field">
+            <label for="gRecPw">New password</label>
+            <input id="gRecPw" type="password" placeholder="At least 6 characters">
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;">
+            <button id="gRecCancel" type="button" class="btn sm ghost">Cancel</button>
+            <button id="gRecSubmit" type="button" class="btn sm">Reset &amp; Sign in</button>
+          </div>
+        </div>
+
+        <div class="gate-sample-strip">
+          <span class="mono-meta">Want to inspect the live dashboard right away?</span>
+          <button id="gSampleBtn" type="button" class="btn gold" style="width:100%;">Explore Sample Household (SYAM · Aug 2026)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Workspace -->
+  <div id="app" hidden>
+    <header class="band" role="banner">
+      <div class="band-inner">
+        <a href="#s01" class="band-brand" aria-label="H E M home">
+          <span class="mark">
+            <span class="mark-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="mark-word">H E M</span>
+          </span>
+        </a>
+
+        <nav id="navList" class="band-nav" aria-label="Report sections"></nav>
+
+        <div class="band-actions">
+          <button id="pagerToggle" type="button" class="pager-toggle" aria-expanded="false" aria-controls="pagerDrawer">
+            <span id="pagerLabel">01 — Overview</span>
+            <span aria-hidden="true">▾</span>
+          </button>
+          <button id="quickAddBtn" type="button" class="band-btn is-accent">+ Add entry</button>
+          <button id="calBandBtn" type="button" class="band-btn" aria-expanded="false" aria-controls="calDialog">Calendar</button>
+          <button id="calcBandBtn" type="button" class="band-btn" aria-expanded="false" aria-controls="finCalc">Calculator</button>
+          <button id="themePanelBtn" type="button" class="band-btn" aria-expanded="false" aria-controls="themePanel">Themes</button>
+        </div>
+      </div>
+      <div id="bandProgress" class="band-progress" aria-hidden="true"></div>
+    </header>
+
+    <div id="pagerDrawer" class="pager-drawer" hidden>
+      <div id="pagerList" class="pager-list"></div>
+      <div class="pager-tools">
+        <button id="calDrawerBtn" type="button" class="btn sm ghost">Open Household Calendar</button>
+        <button id="calcDrawerBtn" type="button" class="btn sm ghost">Open Financial Calculator (C)</button>
+      </div>
+    </div>
+
+    <div id="gridOverlay" class="grid-overlay" hidden aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <main id="main" class="page-main" tabindex="-1">
+      <!-- Masthead Hero + Global Filters -->
+      <section class="hero-masthead" aria-label="Household financial ledger header">
+        <div class="hero-kicker-row">
+          <span class="micro-upper">HOUSEHOLD EXPENSE MANAGER</span>
+          <div class="hero-meta-strip">
+            <span id="heroHouse">Household</span>
+            <span aria-hidden="true">·</span>
+            <span id="heroUser">Member</span>
+            <span aria-hidden="true">·</span>
+            <span id="heroSync">Device ledger</span>
+            <span aria-hidden="true">·</span>
+            <span id="heroRowsCount" class="num">0 entries</span>
+          </div>
+        </div>
+        <h1 id="heroTitle" class="hero-title">Household Financial Ledger &amp; Intelligence</h1>
+        <p id="heroLede" class="hero-lede">Personal &amp; household financial intelligence — income sources, recurring expenses, tax regimes, EMIs, AI recommendations, and reports unified in thirteen editorial spreads.</p>
+
+        <!-- Global Filter Strip (non-fixed so viewport never feels cramped) -->
+        <div class="filter-bar" role="region" aria-label="Global ledger filters">
+          <div class="filter-grid">
+            <div class="filter-cell"><label for="fYear">Year</label><select id="fYear"></select></div>
+            <div class="filter-cell"><label for="fMonth">Month</label><select id="fMonth"></select></div>
+            <div class="filter-cell"><label for="fMember">Member</label><select id="fMember"></select></div>
+            <div class="filter-cell"><label for="fType">Type</label><select id="fType"></select></div>
+            <div class="filter-cell"><label for="fCategory">Category</label><select id="fCategory"></select></div>
+            <div class="filter-cell"><label for="fPm">Payment Method</label><select id="fPm"></select></div>
+            <div class="filter-cell"><label for="fStatus">Status</label><select id="fStatus"></select></div>
+          </div>
+          <div class="filter-footer">
+            <span id="fCountLabel" class="mono-meta num">0 records</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="mono-meta" style="opacity:0.85;">Shortcuts: J / K sections · 1–0 jump · G grid</span>
+              <button id="fReset" type="button" class="btn sm ghost">Clear filters</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 01 OVERVIEW & ANALYSIS -->
+      <section id="s01" class="spread" aria-labelledby="s01Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">01</span>
+              <h2 id="s01Title" class="spread-title">Overview &amp; Analysis</h2>
+            </div>
+            <p class="spread-sub">Live household cash inflows, fixed vs variable commitments, EMIs, tax reserve, savings rate, net worth, and upcoming settlements.</p>
+          </div>
+          <span class="mono-meta">Folio 002–003</span>
+        </div>
+
+        <div id="ovAlertBanner" class="pf-alert-strip" hidden role="status"></div>
+
+        <div class="kpi-strip">
+          <div class="kpi-box">
+            <div class="kpi-lbl">Total Income</div>
+            <div id="kpiIncome" class="kpi-val num is-green">₹0</div>
+            <div class="kpi-sub">Actual inflow</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-lbl">Total Outflow</div>
+            <div id="kpiOutflow" class="kpi-val num">₹0</div>
+            <div class="kpi-sub">Expenses + Loans + Savings</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-lbl">Available Balance</div>
+            <div id="kpiBalance" class="kpi-val num">₹0</div>
+            <div class="kpi-sub">Income minus outflow</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-lbl">Total Savings</div>
+            <div id="kpiSavings" class="kpi-val num is-green">₹0</div>
+            <div class="kpi-sub">SIPs, RD &amp; Gold schemes</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-lbl">Loan Repayments</div>
+            <div id="kpiLoans" class="kpi-val num">₹0</div>
+            <div id="kpiDueSub" class="kpi-sub">To be paid: ₹0</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-lbl">Budget Utilisation</div>
+            <div id="kpiUtil" class="kpi-val num">0.0%</div>
+            <div id="kpiPaidSub" class="kpi-sub">Paid: ₹0</div>
+          </div>
+        </div>
+
+        <div class="spread-grid has-spine">
+          <div class="col-6 card">
+            <div class="card-head">
+              <h3 class="card-title">Where household money went</h3>
+              <span class="micro-upper">Signature Cash Flow</span>
+            </div>
+            <div id="ovFlowBar" class="flow-bar"></div>
+            <div id="ovFlowKey" class="flow-key"></div>
+            <p id="ovFlowCap" class="mono-meta" style="margin-top:12px;"></p>
+
+            <hr style="border:0;border-top:1px solid var(--rule);margin:20px 0;">
+
+            <div class="card-head">
+              <h3 class="card-title">Upcoming Bills &amp; Recent Activity</h3>
+              <button id="ovOpenCalBtn" type="button" class="btn sm ghost">Calendar view</button>
+            </div>
+            <p class="mono-meta" style="margin:0 0 8px;">To be paid</p>
+            <div id="ovUpcomingList" class="feed-list" style="margin-bottom:14px;"></div>
+            <p class="mono-meta" style="margin:0 0 8px;">Latest entries</p>
+            <div id="ovRecentList" class="feed-list"></div>
+          </div>
+
+          <div class="col-6 card">
+            <div class="card-head">
+              <h3 class="card-title">Every ledger row as a unit square</h3>
+              <div id="ovUnitSeg" class="seg-group" role="group" aria-label="Group matrix by">
+                <button type="button" class="seg-btn" data-unit="all" aria-pressed="false">All</button>
+                <button type="button" class="seg-btn" data-unit="type" aria-pressed="true">Type</button>
+                <button type="button" class="seg-btn" data-unit="member" aria-pressed="false">Member</button>
+                <button type="button" class="seg-btn" data-unit="status" aria-pressed="false">Status</button>
+                <button type="button" class="seg-btn" data-unit="pm" aria-pressed="false">PM</button>
+              </div>
+            </div>
+            <div id="ovUnitChart"></div>
+            <div id="ovUnitCap"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Income &amp; Expense Category Trends (Last 6 Months)</h3>
+                <p id="ovSparkWindow" class="mono-meta" style="margin:2px 0 0;">6-month trailing window</p>
+              </div>
+              <div id="ovSparkSeg" class="seg-group" role="group" aria-label="Filter sparkline categories">
+                <button type="button" class="seg-btn" data-spark="all" aria-pressed="true">All</button>
+                <button type="button" class="seg-btn" data-spark="INCOME" aria-pressed="false">Income</button>
+                <button type="button" class="seg-btn" data-spark="EXPENSE" aria-pressed="false">Expense</button>
+              </div>
+            </div>
+            <div id="ovSparkHost"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Complete Personal Finance Analysis</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Normalized monthly &amp; annual metrics combining My Financial Profile, Payments &amp; Obligations, and active ledger data without double-counting.</p>
+              </div>
+              <span id="ovTaxBadge" class="mode-pill">Tax: Not configured</span>
+            </div>
+            <div id="pfKpiGrid" class="pf-kpi-grid"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">12-Month Cash Flow Forecast</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Projects recurring monthly, quarterly, annual, and one-time commitments — highlights deficit months early.</p>
+              </div>
+              <span class="micro-upper">FIG. 08A · Forecast</span>
+            </div>
+            <div id="ovForecastChart"></div>
+            <div id="ovForecastCap"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 MY FINANCIAL PROFILE -->
+      <section id="sProfile" class="spread" aria-labelledby="sProfileTitle">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">02</span>
+              <h2 id="sProfileTitle" class="spread-title">My Financial Profile</h2>
+            </div>
+            <p class="spread-sub">Capture recurring income sources, regular &amp; lifestyle expenses across frequencies, plus assets &amp; liabilities for Net Worth analysis.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <button id="profImportBtn" type="button" class="btn sm ghost">Import Streams from Ledger</button>
+            <span class="mono-meta">Folio 004–005</span>
+          </div>
+        </div>
+
+        <div id="profSummaryStrip" class="kpi-strip cols-4"></div>
+
+        <div class="spread-grid">
+          <!-- Income Sources Card -->
+          <div class="col-6 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Income Sources</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Salary, business, freelance, rental, interest, bonuses &amp; one-time inflows.</p>
+              </div>
+              <span id="profIncMode" class="mode-pill">New source</span>
+            </div>
+            <form id="profIncForm" novalidate>
+              <div class="form-grid">
+                <div class="field" style="grid-column:span 2;"><label for="piName">Source Name</label><input id="piName" type="text" placeholder="Primary Monthly Salary" required></div>
+                <div class="field">
+                  <label for="piKind">Income Type</label>
+                  <select id="piKind">
+                    <option value="monthly-salary">Monthly Salary</option>
+                    <option value="annual-salary">Annual Salary</option>
+                    <option value="business">Business Income</option>
+                    <option value="freelance">Freelance / Part-Time</option>
+                    <option value="rental">Rental Income</option>
+                    <option value="investment-interest">Investments &amp; Interest</option>
+                    <option value="bonus">Bonus / Additional</option>
+                    <option value="one-time">One-Time Income</option>
+                  </select>
+                </div>
+                <div class="field"><label for="piAmt">Amount (₹)</label><input id="piAmt" type="number" min="0" step="1" placeholder="115000" required></div>
+                <div class="field">
+                  <label for="piFreq">Frequency</label>
+                  <select id="piFreq">
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="annual">Annual</option>
+                    <option value="one-time">One-Time</option>
+                  </select>
+                </div>
+                <div class="field"><label for="piPayDay">Pay Day (1–31)</label><input id="piPayDay" type="number" min="1" max="31" value="1"></div>
+                <div class="field"><label for="piMember">Member</label><input id="piMember" type="text" list="dlMembers" placeholder="SYAM"></div>
+                <div class="field"><label for="piDate">Credit Date (Annual / One-time)</label><input id="piDate" type="date"></div>
+                <div class="field" style="align-self:end;">
+                  <label style="display:flex;align-items:center;gap:7px;cursor:pointer;min-height:36px;">
+                    <input id="piEst" type="checkbox" style="width:auto;min-height:auto;">
+                    <span>Mark as Estimated</span>
+                  </label>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+                <button id="piSubmit" type="submit" class="btn sm">Add income source</button>
+                <button id="piCancel" type="button" class="btn sm ghost" hidden>Cancel edit</button>
+              </div>
+            </form>
+            <hr style="border:0;border-top:1px solid var(--rule);margin:16px 0;">
+            <div id="profIncList" class="feed-list"></div>
+          </div>
+
+          <!-- Regular & Lifestyle Expenses Card -->
+          <div class="col-6 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Regular &amp; Lifestyle Expenses</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Rent, groceries, utilities, fuel, fees, medical, shopping, subscriptions &amp; family.</p>
+              </div>
+              <span id="profExpMode" class="mode-pill">New expense</span>
+            </div>
+            <form id="profExpForm" novalidate>
+              <div class="form-grid">
+                <div class="field" style="grid-column:span 2;"><label for="peName">Expense Name</label><input id="peName" type="text" placeholder="House Rent / Maintenance" required></div>
+                <div class="field">
+                  <label for="peCat">Category</label>
+                  <select id="peCat">
+                    <option value="Rent / Maintenance">Rent / Maintenance</option>
+                    <option value="Groceries & Food">Groceries &amp; Food</option>
+                    <option value="Utilities (Elec/Water/Net)">Utilities (Elec/Water/Net)</option>
+                    <option value="Transport & Fuel">Transport &amp; Fuel</option>
+                    <option value="Education Fees">Education Fees</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Shopping & Entertainment">Shopping &amp; Entertainment</option>
+                    <option value="Subscriptions">Subscriptions</option>
+                    <option value="Family Expenses">Family Expenses</option>
+                    <option value="Other">Other Recurring / Occasional</option>
+                  </select>
+                </div>
+                <div class="field"><label for="peAmt">Amount (₹)</label><input id="peAmt" type="number" min="0" step="1" placeholder="15000" required></div>
+                <div class="field">
+                  <label for="peFreq">Frequency</label>
+                  <select id="peFreq">
+                    <option value="daily">Daily (×30/mo)</option>
+                    <option value="weekly">Weekly (×52/12 mo)</option>
+                    <option value="monthly" selected>Monthly</option>
+                    <option value="quarterly">Quarterly (÷3/mo)</option>
+                    <option value="yearly">Yearly (÷12/mo)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="peKind">Nature</label>
+                  <select id="peKind">
+                    <option value="fixed">Fixed Expense</option>
+                    <option value="variable">Variable Expense</option>
+                  </select>
+                </div>
+                <div class="field"><label for="peDay">Due Day (1–31)</label><input id="peDay" type="number" min="1" max="31" value="5"></div>
+                <div class="field" style="grid-column:span 2;align-self:end;">
+                  <label style="display:flex;align-items:center;gap:7px;cursor:pointer;min-height:36px;">
+                    <input id="peEss" type="checkbox" checked style="width:auto;min-height:auto;">
+                    <span>Essential household expense (used in Emergency Fund target)</span>
+                  </label>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+                <button id="peSubmit" type="submit" class="btn sm">Add expense rule</button>
+                <button id="peCancel" type="button" class="btn sm ghost" hidden>Cancel edit</button>
+              </div>
+            </form>
+            <hr style="border:0;border-top:1px solid var(--rule);margin:16px 0;">
+            <div id="profExpList" class="feed-list"></div>
+          </div>
+
+          <!-- Assets & Liabilities (Net Worth) -->
+          <div class="col-6 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Household Assets</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Bank balances, FDs, Mutual Funds, Gold, PF/PPF, Real Estate.</p>
+              </div>
+              <span id="profAssetTotal" class="mode-pill">₹0</span>
+            </div>
+            <form id="profAssetForm" novalidate>
+              <div class="form-grid">
+                <div class="field"><label for="paName">Asset Name</label><input id="paName" type="text" placeholder="Emergency Sweep FD" required></div>
+                <div class="field">
+                  <label for="paKind">Asset Type</label>
+                  <select id="paKind">
+                    <option value="Cash & Bank">Cash &amp; Bank</option>
+                    <option value="Fixed Deposits & RD">Fixed Deposits &amp; RD</option>
+                    <option value="Mutual Funds & Equity">Mutual Funds &amp; Equity</option>
+                    <option value="PF / PPF / NPS">PF / PPF / NPS</option>
+                    <option value="Gold & Jewellery">Gold &amp; Jewellery</option>
+                    <option value="Real Estate">Real Estate</option>
+                    <option value="Other Asset">Other Asset</option>
+                  </select>
+                </div>
+                <div class="field"><label for="paVal">Current Value (₹)</label><input id="paVal" type="number" min="0" step="1" placeholder="250000" required></div>
+              </div>
+              <button type="submit" class="btn sm">Add asset</button>
+            </form>
+            <hr style="border:0;border-top:1px solid var(--rule);margin:14px 0;">
+            <div id="profAssetList" class="feed-list"></div>
+          </div>
+
+          <div class="col-6 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Outstanding Liabilities</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Principal balances across home, personal, vehicle loans &amp; cards.</p>
+              </div>
+              <span id="profLiabTotal" class="mode-pill">₹0</span>
+            </div>
+            <form id="profLiabForm" novalidate>
+              <div class="form-grid">
+                <div class="field"><label for="plName">Liability Name</label><input id="plName" type="text" placeholder="HDFC Housing Loan" required></div>
+                <div class="field">
+                  <label for="plKind">Liability Type</label>
+                  <select id="plKind">
+                    <option value="Home Loan">Home Loan</option>
+                    <option value="Personal Loan">Personal Loan</option>
+                    <option value="Vehicle Loan">Vehicle Loan</option>
+                    <option value="Education Loan">Education Loan</option>
+                    <option value="Credit Card Balance">Credit Card Balance</option>
+                    <option value="Other Liability">Other Liability</option>
+                  </select>
+                </div>
+                <div class="field"><label for="plBal">Remaining Balance (₹)</label><input id="plBal" type="number" min="0" step="1" placeholder="1450000" required></div>
+                <div class="field"><label for="plRate">Interest Rate (% p.a.)</label><input id="plRate" type="number" min="0" max="60" step="0.1" placeholder="8.75"></div>
+              </div>
+              <button type="submit" class="btn sm">Add liability</button>
+            </form>
+            <hr style="border:0;border-top:1px solid var(--rule);margin:14px 0;">
+            <div id="profLiabList" class="feed-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 PAYMENTS & OBLIGATIONS -->
+      <section id="sOblig" class="spread" aria-labelledby="sObligTitle">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">03</span>
+              <h2 id="sObligTitle" class="spread-title">Payments &amp; Obligations</h2>
+            </div>
+            <p class="spread-sub">Track EMIs, credit card bills, insurance premiums, and configure your tax regime &amp; deductions explicitly without automatic assumptions.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button id="oblOpenCalBtn" type="button" class="btn sm ghost">Calendar Schedule</button>
+            <span class="mono-meta">Folio 006–007</span>
+          </div>
+        </div>
+
+        <div id="oblAlertsHost" class="pf-alert-strip" hidden role="status"></div>
+
+        <div class="spread-grid">
+          <div class="col-7 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Obligations, EMIs &amp; Bills Register</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Add EMIs, tax payments, insurance renewals, and credit cards with explicit Confirmed vs Estimated origin.</p>
+              </div>
+              <span id="oblModePill" class="mode-pill">New obligation</span>
+            </div>
+
+            <form id="oblForm" novalidate>
+              <div class="form-grid">
+                <div class="field" style="grid-column:span 2;"><label for="obName">Obligation / Bill Title</label><input id="obName" type="text" placeholder="Housing Loan EMI / Health Insurance" required></div>
+                <div class="field">
+                  <label for="obKind">Obligation Type</label>
+                  <select id="obKind">
+                    <option value="home-loan-emi">Home Loan EMI</option>
+                    <option value="personal-loan-emi">Personal Loan EMI</option>
+                    <option value="vehicle-loan-emi">Vehicle Loan EMI</option>
+                    <option value="education-loan-emi">Education Loan EMI</option>
+                    <option value="credit-card">Credit Card Bill</option>
+                    <option value="insurance-premium">Insurance Premium</option>
+                    <option value="income-tax">Income Tax</option>
+                    <option value="advance-tax">Advance Tax</option>
+                    <option value="tds">TDS Deduction</option>
+                    <option value="gst">GST Payment</option>
+                    <option value="other-liability">Other Liability</option>
+                  </select>
+                </div>
+                <div class="field"><label for="obTotal">Total / EMI Amount (₹)</label><input id="obTotal" type="number" min="0" step="1" placeholder="26298" required></div>
+                <div class="field"><label for="obDueAmt">Amount Currently Due (₹)</label><input id="obDueAmt" type="number" min="0" step="1" placeholder="26298" required></div>
+                <div class="field"><label for="obDueDate">Due Date</label><input id="obDueDate" type="date" required></div>
+                <div class="field">
+                  <label for="obFreq">Frequency</label>
+                  <select id="obFreq">
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="yearly">Yearly</option>
+                    <option value="one-time">One-Time</option>
+                  </select>
+                </div>
+                <div class="field"><label for="obRemBal">Remaining Loan Bal. (₹, opt.)</label><input id="obRemBal" type="number" min="0" step="1" placeholder="0"></div>
+                <div class="field"><label for="obRate">Interest Rate (% p.a., opt.)</label><input id="obRate" type="number" min="0" max="60" step="0.1" placeholder="0"></div>
+                <div class="field">
+                  <label for="obStatus">Payment Status</label>
+                  <select id="obStatus">
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Partially Paid">Partially Paid</option>
+                    <option value="Overdue">Overdue</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="obOrigin">Amount Basis</label>
+                  <select id="obOrigin">
+                    <option value="user-entered">User-Entered</option>
+                    <option value="confirmed">Confirmed Payment</option>
+                    <option value="estimated">Estimated Amount</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+                <button id="obSubmit" type="submit" class="btn sm">Add obligation</button>
+                <button id="obCancel" type="button" class="btn sm ghost" hidden>Cancel edit</button>
+              </div>
+            </form>
+
+            <hr style="border:0;border-top:1px solid var(--rule);margin:16px 0;">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Obligation</th>
+                    <th>Due Date</th>
+                    <th class="is-num">Total / Due (₹)</th>
+                    <th>Status &amp; Basis</th>
+                    <th class="is-num">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="oblTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tax Regime & Liability Estimator -->
+          <div class="col-5 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Tax Liability &amp; Regime Details</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">H ∈ M never assumes taxes automatically — enter your regime &amp; deductions below.</p>
+              </div>
+              <span id="taxStatusPill" class="mode-pill">Not Configured</span>
+            </div>
+
+            <form id="taxForm" novalidate>
+              <div class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+                <div class="field">
+                  <label for="txRegime">Tax Regime</label>
+                  <select id="txRegime">
+                    <option value="new">New Tax Regime (Default FY 25-26)</option>
+                    <option value="old">Old Tax Regime (With 80C / 80D / HRA)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="txAY">Assessment Year</label>
+                  <input id="txAY" type="text" value="FY 2025-26 (AY 2026-27)">
+                </div>
+                <div class="field" style="grid-column:span 2;">
+                  <label for="txGross">Annual Gross Income Override (₹, leave blank to use Profile Income)</label>
+                  <input id="txGross" type="number" min="0" step="1000" placeholder="Auto from Profile / Ledger">
+                </div>
+                <div class="field"><label for="tx80C">Sec 80C Deductions (₹, Old)</label><input id="tx80C" type="number" min="0" max="150000" value="0"></div>
+                <div class="field"><label for="tx80D">Sec 80D Health Ins. (₹, Old)</label><input id="tx80D" type="number" min="0" value="0"></div>
+                <div class="field"><label for="txHra">HRA Exemption (₹, Old)</label><input id="txHra" type="number" min="0" value="0"></div>
+                <div class="field"><label for="txOtherEx">Other Exemptions (₹, Old)</label><input id="txOtherEx" type="number" min="0" value="0"></div>
+                <div class="field"><label for="txTds">TDS Already Deducted (₹)</label><input id="txTds" type="number" min="0" value="0"></div>
+                <div class="field"><label for="txAdv">Advance Tax Paid (₹)</label><input id="txAdv" type="number" min="0" value="0"></div>
+                <div class="field">
+                  <label style="display:flex;align-items:center;gap:7px;cursor:pointer;min-height:36px;">
+                    <input id="txGstApp" type="checkbox" style="width:auto;min-height:auto;">
+                    <span>GST Applicable</span>
+                  </label>
+                </div>
+                <div class="field"><label for="txGstMo">Est. Monthly GST (₹)</label><input id="txGstMo" type="number" min="0" value="0"></div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                <button id="taxSaveBtn" type="submit" class="btn sm">Apply &amp; Estimate Tax</button>
+                <button id="taxResetBtn" type="button" class="btn sm ghost">Disable Tax Estimate</button>
+              </div>
+            </form>
+
+            <div id="taxBreakdownHost" style="margin-top:16px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 AI FINANCIAL ADVISOR -->
+      <section id="sAdvisor" class="spread" aria-labelledby="sAdvisorTitle">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">04</span>
+              <h2 id="sAdvisorTitle" class="spread-title">AI Financial Advisor</h2>
+            </div>
+            <p class="spread-sub">Actionable household recommendations, emergency fund targets, loan repayment strategy comparisons, and cash-flow diagnostics derived strictly from your real entries.</p>
+          </div>
+          <div id="advPrioSeg" class="seg-group" role="group" aria-label="Filter advice by priority">
+            <button type="button" class="seg-btn" data-aprio="ALL" aria-pressed="true">All Advice</button>
+            <button type="button" class="seg-btn" data-aprio="High" aria-pressed="false">High</button>
+            <button type="button" class="seg-btn" data-aprio="Medium" aria-pressed="false">Medium</button>
+            <button type="button" class="seg-btn" data-aprio="Low" aria-pressed="false">Low</button>
+          </div>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-4 card" id="advHealthHost"></div>
+          <div class="col-4 card" id="advLoanHost"></div>
+          <div class="col-4 card" id="advAllocHost"></div>
+
+          <div class="col-12">
+            <div id="advRecsHost" class="advisor-grid"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head">
+              <h3 class="card-title">Transparent Calculation &amp; Data Basis</h3>
+              <span class="micro-upper">Live Audit Trail</span>
+            </div>
+            <div id="advMethodHost"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 INCOME & EXPENSES + TRANSACTION EDITOR -->
+      <section id="s02" class="spread" aria-labelledby="s02Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">05</span>
+              <h2 id="s02Title" class="spread-title">Income &amp; Expenses</h2>
+            </div>
+            <p class="spread-sub">Compare cash inflows against outflow buckets and log or amend any household transaction directly.</p>
+          </div>
+          <span class="mono-meta">Folio 010–011</span>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-6 card">
+            <div class="card-head">
+              <h3 class="card-title">Inflow vs Outflow Streams</h3>
+              <span class="micro-upper">FIG. 02B</span>
+            </div>
+            <div id="ieBarChart"></div>
+            <div id="ieBarCap"></div>
+
+            <hr style="border:0;border-top:1px solid var(--rule);margin:20px 0;">
+
+            <div class="card-head">
+              <h3 class="card-title">Proportional Composition</h3>
+              <div id="ieCompSeg" class="seg-group" role="group" aria-label="Composition dimension">
+                <button type="button" class="seg-btn" data-comp="outflow" aria-pressed="true">By Type</button>
+                <button type="button" class="seg-btn" data-comp="pm" aria-pressed="false">By Payment Method</button>
+              </div>
+            </div>
+            <div id="ieCompChart"></div>
+            <div id="ieCompCap"></div>
+          </div>
+
+          <div class="col-6 card">
+            <div class="card-head">
+              <h3 id="txFormTitle" class="card-title">Log new household transaction</h3>
+              <span id="txModePill" class="mode-pill">New entry #1</span>
+            </div>
+            <p id="txReadOnlyNote" class="gate-notice" hidden>Your role is Viewer (read-only). Ask an admin for Editor access to log or edit rows.</p>
+
+            <form id="txForm" novalidate>
+              <div class="form-grid">
+                <div class="field"><label for="fId">Record ID</label><input id="fId" type="number" min="1"></div>
+                <div class="field"><label for="fDate">Date</label><input id="fDate" type="date" required></div>
+                <div class="field"><label for="fYearAuto">Year (Auto)</label><input id="fYearAuto" type="text" readonly></div>
+                <div class="field"><label for="fMonthAuto">Month (Auto)</label><input id="fMonthAuto" type="text" readonly></div>
+                <div class="field"><label for="fMemberIn">Member</label><input id="fMemberIn" type="text" list="dlMembers" placeholder="SYAM" required></div>
+                <div class="field">
+                  <label for="fTypeIn">Type</label>
+                  <select id="fTypeIn">
+                    <option value="EXPENSE">EXPENSE</option>
+                    <option value="INCOME">INCOME</option>
+                    <option value="LOAN">LOAN</option>
+                    <option value="SAVING">SAVING</option>
+                  </select>
+                </div>
+                <div class="field"><label for="fCatIn">Category</label><input id="fCatIn" type="text" list="dlCategories" placeholder="EXPENSE" required></div>
+                <div class="field" style="grid-column:span 2;"><label for="fDescIn">Description</label><input id="fDescIn" type="text" list="dlDescs" placeholder="GROCERIES" required></div>
+                <div class="field"><label for="fPmIn">Payment Method</label><input id="fPmIn" type="text" list="dlPms" placeholder="UPI"></div>
+                <div class="field"><label for="fBudgetIn">Budget (₹)</label><input id="fBudgetIn" type="number" step="0.01" min="0" value="0"></div>
+                <div class="field"><label for="fSpentIn">Actually Spent (₹)</label><input id="fSpentIn" type="number" step="0.01" min="0" value="0"></div>
+                <div class="field">
+                  <label for="fStatusIn">Status</label>
+                  <select id="fStatusIn">
+                    <option value="PAID">PAID</option>
+                    <option value="TO BE PAID">TO BE PAID</option>
+                    <option value="Not Necessary">Not Necessary</option>
+                  </select>
+                </div>
+                <div class="field"><label for="fDueIn">Due Date</label><input id="fDueIn" type="date"></div>
+                <div class="field"><label for="fPaidOnIn">Paid Date</label><input id="fPaidOnIn" type="date"></div>
+              </div>
+
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                <button id="txSubmit" type="submit" class="btn">Add transaction</button>
+                <button id="txClear" type="button" class="btn ghost">Clear</button>
+                <button id="txCancel" type="button" class="btn ghost" hidden>Cancel edit</button>
+                <button id="txDelete" type="button" class="btn danger" hidden>Delete record</button>
+              </div>
+            </form>
+
+            <hr style="border:0;border-top:1px solid var(--rule);margin:18px 0;">
+            <div class="card-head" style="margin-bottom:8px;">
+              <h4 style="margin:0;font-size:13.5px;">Find a record by ID</h4>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="findIdInput" type="number" min="1" placeholder="Enter ID (e.g. 40)" style="max-width:190px;">
+              <button id="findIdBtn" type="button" class="btn sm ghost">Find</button>
+            </div>
+            <div id="findIdResult" style="margin-top:10px;"></div>
+          </div>
+        </div>
+
+        <datalist id="dlMembers"></datalist>
+        <datalist id="dlCategories"></datalist>
+        <datalist id="dlDescs"></datalist>
+        <datalist id="dlPms"></datalist>
+      </section>
+
+      <!-- 06 BUDGET INTELLIGENCE -->
+      <section id="s03" class="spread" aria-labelledby="s03Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">06</span>
+              <h2 id="s03Title" class="spread-title">Budget Intelligence</h2>
+            </div>
+            <p class="spread-sub">Track planned targets versus actual outgoings, catch overruns early, and inspect category intensity across the household.</p>
+          </div>
+          <span class="mono-meta">Folio 012–013</span>
+        </div>
+
+        <div class="kpi-strip cols-4">
+          <div class="kpi-box"><div class="kpi-lbl">Planned Outflow Budget</div><div id="bKpiBudget" class="kpi-val num">₹0</div></div>
+          <div class="kpi-box"><div class="kpi-lbl">Actual Outflow Spent</div><div id="bKpiSpent" class="kpi-val num">₹0</div></div>
+          <div class="kpi-box"><div class="kpi-lbl">Remaining / Variance</div><div id="bKpiRem" class="kpi-val num">₹0</div></div>
+          <div class="kpi-box">
+            <div class="kpi-lbl">Budget Used</div>
+            <div id="bKpiPct" class="kpi-val num">0.0%</div>
+            <div id="bKpiBarTrack" class="budget-bar-track tier-green" style="margin-top:8px;height:7px;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Overall budget used">
+              <div id="bKpiBarFill" class="budget-bar-fill" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-12 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Category Budget Progress</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Visual % of allocated budget consumed — shifts green to amber to red as spending approaches 100%.</p>
+              </div>
+              <div id="bProgFilterSeg" class="seg-group" role="group" aria-label="Filter category budget cards">
+                <button type="button" class="seg-btn" data-bprog="all" aria-pressed="true">All</button>
+                <button type="button" class="seg-btn" data-bprog="alerts" aria-pressed="false">Alerts ≥70%</button>
+                <button type="button" class="seg-btn" data-bprog="healthy" aria-pressed="false">Healthy</button>
+              </div>
+            </div>
+            <div id="bProgCardsHost"></div>
+          </div>
+
+          <div class="col-7 card">
+            <div class="card-head">
+              <h3 class="card-title">Budget vs Actual Dumbbell Comparison</h3>
+              <div id="bDumbSeg" class="seg-group" role="group" aria-label="Sort categories by">
+                <button type="button" class="seg-btn" data-dumb="spent" aria-pressed="true">Actual</button>
+                <button type="button" class="seg-btn" data-dumb="budget" aria-pressed="false">Budget</button>
+                <button type="button" class="seg-btn" data-dumb="variance" aria-pressed="false">Overrun</button>
+              </div>
+            </div>
+            <div id="bDumbProg" class="budget-inline-prog"></div>
+            <div id="bDumbChart"></div>
+            <div id="bDumbCap"></div>
+          </div>
+
+          <div class="col-5 card">
+            <div class="card-head">
+              <h3 class="card-title">Outflow Split by Member</h3>
+              <select id="bRotMemberSel" class="sel-sm" aria-label="Filter outflow split by member"></select>
+            </div>
+            <div id="bRotProg" class="budget-inline-prog"></div>
+            <div id="bRotChart"></div>
+            <div id="bRotCap"></div>
+
+            <hr style="border:0;border-top:1px solid var(--rule);margin:18px 0;">
+            <div class="card-head" style="margin-bottom:8px;">
+              <h4 style="margin:0;font-size:13.5px;">Overspending Warnings</h4>
+            </div>
+            <div id="bOverList" class="feed-list"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Spending Intensity Heatmap</h3>
+                <p id="hmLiveCount" class="mono-meta" style="margin:2px 0 0;"></p>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+                <div id="hmAxisSeg" class="seg-group" role="group" aria-label="Heatmap columns">
+                  <button type="button" class="seg-btn" data-hma="member" aria-pressed="true">By Member</button>
+                  <button type="button" class="seg-btn" data-hma="month" aria-pressed="false">By Month</button>
+                </div>
+                <label style="display:inline-flex;align-items:center;gap:8px;font-size:12px;">
+                  <span>Min share: <strong id="hmThreshRead" class="num">0%</strong></span>
+                  <input id="hmThreshRange" type="range" min="0" max="20" step="1" value="0">
+                </label>
+              </div>
+            </div>
+            <div id="hmProg" class="budget-inline-prog"></div>
+            <div id="hmHost"></div>
+            <div id="hmCap"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 SAVINGS & GOALS -->
+      <section id="s04" class="spread" aria-labelledby="s04Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">07</span>
+              <h2 id="s04Title" class="spread-title">Savings &amp; Goals</h2>
+            </div>
+            <p class="spread-sub">Monitor recurring deposits, mutual fund SIPs, gold schemes, and the household savings rate.</p>
+          </div>
+          <span class="mono-meta">Folio 014–015</span>
+        </div>
+
+        <div class="kpi-strip cols-4">
+          <div class="kpi-box"><div class="kpi-lbl">Total Saved</div><div id="svKpiTotal" class="kpi-val num is-green">₹0</div></div>
+          <div class="kpi-box"><div class="kpi-lbl">Savings Target</div><div id="svKpiBudget" class="kpi-val num">₹0</div></div>
+          <div class="kpi-box"><div class="kpi-lbl">Savings Rate (of Income)</div><div id="svKpiRate" class="kpi-val num">0.0%</div></div>
+          <div class="kpi-box"><div class="kpi-lbl">Active Instruments</div><div id="svKpiCount" class="kpi-val num">0 entries</div></div>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-5 card">
+            <div class="card-head">
+              <h3 class="card-title">Every ₹100 Allocated</h3>
+              <select id="svMemberSel" class="sel-sm" aria-label="Filter waffle by member"></select>
+            </div>
+            <div id="svStatHost" class="rot-stat-box" aria-hidden="true"></div>
+            <div id="svWaffleHost"></div>
+            <div id="svWaffleCap"></div>
+          </div>
+
+          <div class="col-7 card">
+            <div class="card-head">
+              <h3 class="card-title">Savings Contributions &amp; Cumulative Growth</h3>
+              <span class="micro-upper">FIG. 04B</span>
+            </div>
+            <div id="svTrendHost"></div>
+            <div id="svTrendCap"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head"><h3 class="card-title">Savings Instruments &amp; SIP Schedule</h3></div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Instrument / Description</th>
+                    <th>Member</th>
+                    <th>Method</th>
+                    <th class="is-num">Target (₹)</th>
+                    <th class="is-num">Contributed (₹)</th>
+                    <th class="is-num">Progress</th>
+                  </tr>
+                </thead>
+                <tbody id="svTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 LOANS & LIABILITIES -->
+      <section id="s05" class="spread" aria-labelledby="s05Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">08</span>
+              <h2 id="s05Title" class="spread-title">Loans &amp; Liabilities</h2>
+            </div>
+            <p class="spread-sub">Stay ahead of housing loans, personal loans, gold loans, and credit card EMIs with one-click payment settlement.</p>
+          </div>
+          <span class="mono-meta">Folio 016–017</span>
+        </div>
+
+        <div class="kpi-strip cols-4">
+          <div class="kpi-box"><div class="kpi-lbl">Loan Repayments Paid</div><div id="lnKpiPaid" class="kpi-val num">₹0</div></div>
+          <div class="kpi-box"><div class="kpi-lbl">Remaining Due</div><div id="lnKpiDue" class="kpi-val num is-brick">₹0</div></div>
+          <div class="kpi-box"><div class="kpi-lbl">Debt Service Ratio</div><div id="lnKpiShare" class="kpi-val num">0.0%</div></div>
+          <div class="kpi-box"><div class="kpi-lbl">Loan Accounts</div><div id="lnKpiCount" class="kpi-val num">0 EMIs</div></div>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-6 card">
+            <div class="card-head">
+              <h3 class="card-title">Loan Repayments by Category</h3>
+              <span class="micro-upper">FIG. 05A</span>
+            </div>
+            <div id="lnProgHost"></div>
+            <div id="lnProgCap"></div>
+          </div>
+
+          <div class="col-6 card">
+            <div class="card-head">
+              <h3 class="card-title">Obligations &amp; Settlement Timeline</h3>
+              <span class="micro-upper">FIG. 05B</span>
+            </div>
+            <div id="lnTlTrack"></div>
+            <div id="lnTlDetail"></div>
+            <div id="lnTlCap"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head"><h3 class="card-title">EMI &amp; Loan Obligation Ledger</h3></div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Loan Description</th>
+                    <th>Category</th>
+                    <th>Member</th>
+                    <th class="is-num">Budget / EMI (₹)</th>
+                    <th class="is-num">Paid (₹)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="lnTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 09 TRANSACTIONS -->
+      <section id="s06" class="spread" aria-labelledby="s06Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">09</span>
+              <h2 id="s06Title" class="spread-title">Transactions</h2>
+            </div>
+            <p class="spread-sub">Search, sort, edit, mark paid, or export the complete household transaction register in CSV or Excel format.</p>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button id="tAddBtn" type="button" class="btn sm">+ Add transaction</button>
+            <button id="tExpCsv" type="button" class="btn sm ghost">Export CSV</button>
+            <button id="tExpXlsx" type="button" class="btn sm ghost">Export Excel (.xlsx)</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:1;">
+              <input id="tSearch" type="search" placeholder="Search ID, member, category, description, payment…" style="max-width:300px;" aria-label="Search transactions">
+              <div id="tStatusChips" class="seg-group" role="group" aria-label="Quick status filter">
+                <button type="button" class="seg-btn" data-tstatus="ALL" aria-pressed="true">All</button>
+                <button type="button" class="seg-btn" data-tstatus="PAID" aria-pressed="false">PAID</button>
+                <button type="button" class="seg-btn" data-tstatus="TO BE PAID" aria-pressed="false">TO BE PAID</button>
+              </div>
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;">
+              <span>Rows:</span>
+              <select id="tSize" class="sel-sm">
+                <option value="15">15</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead id="tHead"></thead>
+              <tbody id="tBody"></tbody>
+            </table>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;">
+            <span id="tInfo" class="mono-meta num">Showing 0 rows</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button id="tPrev" type="button" class="btn sm ghost">← Prev</button>
+              <span id="tPageLabel" class="mono-meta num">Page 1 / 1</span>
+              <button id="tNext" type="button" class="btn sm ghost">Next →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10 REPORTS & ANALYTICS -->
+      <section id="s07" class="spread" aria-labelledby="s07Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">10</span>
+              <h2 id="s07Title" class="spread-title">Reports &amp; Analytics</h2>
+            </div>
+            <p class="spread-sub">Monthly &amp; Annual Personal Finance Reports with custom date range PDF / Excel exports, scrollytelling narratives, OLS regression, and 9 pivot reports.</p>
+          </div>
+          <span class="mono-meta">Folio 020–021</span>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-5 scrolly-steps" id="scrollySteps">
+            <div class="scrolly-step is-active" data-step="0" tabindex="0">
+              <span class="micro-upper">Narrative 01 · Debt Commitments</span>
+              <h4>Where EMIs &amp; Loans Anchor Monthly Outflow</h4>
+              <p class="body-single">Highlights each household member's debt repayment share alongside housing and personal loan schedules.</p>
+            </div>
+            <div class="scrolly-step" data-step="1" tabindex="0">
+              <span class="micro-upper">Narrative 02 · Everyday Living Spend</span>
+              <h4>Groceries, Fuel, Utilities &amp; Care Expenses</h4>
+              <p class="body-single">Focuses on day-to-day living expenses so discretionary spikes are immediately visible against routine essentials.</p>
+            </div>
+            <div class="scrolly-step" data-step="2" tabindex="0">
+              <span class="micro-upper">Narrative 03 · Balanced Household Mix</span>
+              <h4>Full Outflow Distribution Across Members</h4>
+              <p class="body-single">Combines Living Expenses, Loan EMIs, and Savings in absolute ₹ or 100% proportional view.</p>
+            </div>
+          </div>
+
+          <div class="col-7 card">
+            <div class="card-head">
+              <div id="scrollyLegend" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+              <div id="scrollyModeSeg" class="seg-group" role="group" aria-label="Column scale">
+                <button type="button" class="seg-btn" data-smode="abs" aria-pressed="true">Absolute (₹)</button>
+                <button type="button" class="seg-btn" data-smode="share" aria-pressed="false">Share (%)</button>
+              </div>
+            </div>
+            <div id="scrollyChart"></div>
+            <div id="scrollyCap"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Budget vs Actual Spend Regression</h3>
+                <p class="mono-meta" style="margin:2px 0 0;"><span id="scSlope">—</span> · <span id="scR2">R² —</span></p>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+                <div id="scChips" class="seg-group"></div>
+                <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;">
+                  <span>Min budget: <strong id="scMinBudgetRead" class="num">₹0</strong></span>
+                  <input id="scMinBudget" type="range" min="0" max="20000" step="1000" value="0">
+                </label>
+                <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+                  <input id="scTrendToggle" type="checkbox" checked style="width:auto;min-height:auto;">
+                  <span>OLS Trendline</span>
+                </label>
+              </div>
+            </div>
+            <div id="scChart"></div>
+            <div id="scCap"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head">
+              <h3 class="card-title">9 Household Pivot Reports</h3>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                <select id="repEntitySel" class="sel-sm" aria-label="Filter report entity"></select>
+                <button id="repExpCsv" type="button" class="btn sm ghost">Export this report (CSV)</button>
+              </div>
+            </div>
+            <div id="repTabs" class="seg-group" style="margin-bottom:14px;"></div>
+            <div id="repTableHost" class="table-scroll"></div>
+          </div>
+
+          <div class="col-12 card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Monthly &amp; Annual Personal Finance Report</h3>
+                <p class="mono-meta" style="margin:2px 0 0;">Comprehensive 11-point financial statement across any custom date range with period-over-period comparison.</p>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                <button id="repExpPdf" type="button" class="btn sm">Export PDF Report</button>
+                <button id="repExpXlsx" type="button" class="btn sm ghost">Export Excel (.xlsx)</button>
+              </div>
+            </div>
+
+            <div class="rep-range-bar">
+              <div class="rep-date-inputs">
+                <label class="rep-date-field"><span>From</span><input id="repFromDate" type="date"></label>
+                <label class="rep-date-field"><span>To</span><input id="repToDate" type="date"></label>
+              </div>
+              <div id="repPresetSeg" class="seg-group" role="group" aria-label="Date range presets">
+                <button type="button" class="seg-btn" data-rpreset="all" aria-pressed="true">All Ledger Dates</button>
+                <button type="button" class="seg-btn" data-rpreset="month" aria-pressed="false">Latest Month</button>
+                <button type="button" class="seg-btn" data-rpreset="3m" aria-pressed="false">Last 3 Months</button>
+                <button type="button" class="seg-btn" data-rpreset="year" aria-pressed="false">Full Year</button>
+              </div>
+            </div>
+
+            <div id="pfReportHost" class="report-sheet"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11 HOUSEHOLD MEMBERS -->
+      <section id="s08" class="spread" aria-labelledby="s08Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">11</span>
+              <h2 id="s08Title" class="spread-title">Household Members</h2>
+            </div>
+            <p class="spread-sub">Manage family roles (<strong id="pplHouseName">Household</strong> · <span id="pplMaxNote">0 / 10</span>), send invitations, and update account security.</p>
+          </div>
+          <span class="mono-meta">Folio 022–023</span>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-7 card">
+            <div class="card-head"><h3 class="card-title">Member Directory &amp; Access Roles</h3></div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th class="is-num">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="pplBody"></tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:16px;">
+              <h4 style="margin:0 0 8px;font-size:13.5px;">Role Permissions Matrix</h4>
+              <div class="table-scroll">
+                <table class="data-table">
+                  <thead>
+                    <tr><th>Role</th><th>View &amp; Export</th><th>Add / Edit / Import</th><th>Manage People &amp; Reset</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Admin</strong></td><td class="is-green">Yes</td><td class="is-green">Yes</td><td class="is-green">Yes</td></tr>
+                    <tr><td><strong>Editor</strong></td><td class="is-green">Yes</td><td class="is-green">Yes</td><td class="mono-meta">No</td></tr>
+                    <tr><td><strong>Viewer</strong></td><td class="is-green">Yes</td><td class="mono-meta">No</td><td class="mono-meta">No</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-5" style="display:grid;gap:var(--col-gap);">
+            <div id="pplInviteCard" class="card">
+              <div class="card-head"><h3 class="card-title">Invite Household Member</h3></div>
+              <div class="field"><label for="invEmail">Email address</label><input id="invEmail" type="email" placeholder="member@household.in"></div>
+              <div class="field">
+                <label for="invRole">Role</label>
+                <select id="invRole">
+                  <option value="editor">Editor (Add, edit, import)</option>
+                  <option value="viewer">Viewer (Read &amp; export only)</option>
+                  <option value="admin">Admin (Full control)</option>
+                </select>
+              </div>
+              <button id="invBtn" type="button" class="btn">Invite member</button>
+              <div id="invCodeBox" hidden style="margin-top:12px;padding:10px;border:1px dashed var(--ink-3);background:var(--paper);border-radius:4px;">
+                <span class="micro-upper">One-time E2EE Join Code</span>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px;">
+                  <code id="invCodeVal" style="font-family:var(--font-mono);font-size:13px;"></code>
+                  <button id="invCodeCopy" type="button" class="btn sm ghost">Copy</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h3 class="card-title">Change Password</h3></div>
+              <form id="pwForm" novalidate>
+                <div class="field"><label for="pwOld">Current password</label><input id="pwOld" type="password" required></div>
+                <div class="field"><label for="pwNew">New password</label><input id="pwNew" type="password" required></div>
+                <div class="field"><label for="pwNew2">Confirm new password</label><input id="pwNew2" type="password" required></div>
+                <button type="submit" class="btn ghost">Update password</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12 DATA MANAGEMENT -->
+      <section id="s09" class="spread" aria-labelledby="s09Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">12</span>
+              <h2 id="s09Title" class="spread-title">Data Management</h2>
+            </div>
+            <p class="spread-sub">Import bank or Excel workbooks (CSV, XLSX, XLSM, XLS), download full JSON backups (including Profile &amp; Obligations), or reset to the starter ledger.</p>
+          </div>
+          <span class="mono-meta">Folio 024–025</span>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-7 card">
+            <div class="card-head">
+              <h3 class="card-title">Smart CSV &amp; Excel Importer</h3>
+              <div id="impModeSeg" class="seg-group" role="group" aria-label="Import mode">
+                <button type="button" class="seg-btn" data-impmode="merge" aria-pressed="true">Add to ledger</button>
+                <button type="button" class="seg-btn" data-impmode="replace" aria-pressed="false">Replace all</button>
+              </div>
+            </div>
+            <div id="impDrop" class="dropzone">
+              <p style="margin:0;font-weight:600;">Drop a .xlsx, .xlsm, .xls, or .csv spreadsheet here</p>
+              <p class="mono-meta" style="margin:0;">Automatically detects the header row, Excel dates, ₹ amounts, and transaction types.</p>
+              <input id="impFile" type="file" accept=".csv,.xlsx,.xlsm,.xlsb,.xls" hidden>
+              <button id="impPickBtn" type="button" class="btn sm">Choose file…</button>
+            </div>
+            <p id="impStatus" class="mono-meta" style="margin-top:10px;"></p>
+            <div id="impPreview" class="feed-list" style="margin-top:8px;"></div>
+          </div>
+
+          <div class="col-5" style="display:grid;gap:var(--col-gap);">
+            <div class="card">
+              <div class="card-head"><h3 class="card-title">Backup, Restore &amp; Reset</h3></div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+                <button id="bakExportJson" type="button" class="btn sm">Download JSON backup</button>
+                <input id="bakImportFile" type="file" accept=".json,application/json" hidden>
+                <button id="bakImportJsonBtn" type="button" class="btn sm ghost">Restore JSON…</button>
+              </div>
+              <div style="padding-top:12px;border-top:1px solid var(--rule);">
+                <button id="bakResetBtn" type="button" class="btn sm danger">Reset to starter ledger</button>
+                <div id="bakResetConfirmRow" hidden style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                  <span class="mono-meta is-brick">Confirm overwrite with 49 starter records?</span>
+                  <button id="bakResetConfirmBtn" type="button" class="btn sm danger">Yes, reset now</button>
+                  <button id="bakResetCancelBtn" type="button" class="btn sm ghost">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h3 class="card-title">How Totals Are Calculated</h3></div>
+              <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--ink-2);display:grid;gap:6px;">
+                <li><strong>Income</strong>: Sum of Actual Spent on rows where Type is <code>INCOME</code>.</li>
+                <li><strong>Outflow Budget &amp; Spent</strong>: Calculated on <code>EXPENSE</code>, <code>LOAN</code>, and <code>SAVING</code> rows only, keeping income separate.</li>
+                <li><strong>Available Balance</strong>: Income minus Outflow (Expenses + Loans + Savings).</li>
+                <li><strong>To Be Paid</strong>: Sum of Budget on items whose Status is <code>TO BE PAID</code>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13 SETTINGS -->
+      <section id="s10" class="spread" aria-labelledby="s10Title">
+        <div class="spread-head">
+          <div>
+            <div class="spread-num-title">
+              <span class="spread-num">13</span>
+              <h2 id="s10Title" class="spread-title">Settings</h2>
+            </div>
+            <p class="spread-sub">Switch between H ∈ M Original Ledger and 7 editorial color editions, configure remote sync, or sign out.</p>
+          </div>
+          <span class="mono-meta">Folio 026–027</span>
+        </div>
+
+        <div class="spread-grid">
+          <div class="col-7 card">
+            <div class="card-head">
+              <h3 class="card-title">Visual Edition &amp; Color Theme</h3>
+              <span class="micro-upper">Persisted across sessions</span>
+            </div>
+            <div id="inlineThemeGrid" class="inline-theme-grid"></div>
+          </div>
+
+          <div class="col-5" style="display:grid;gap:var(--col-gap);">
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title">Household Tools</h3>
+                <span class="mono-meta">Shortcut: C</span>
+              </div>
+              <p class="body-single" style="margin-bottom:12px;">Launch the floating financial calculator (EMI, tax, SIP) or open the monthly household calendar &amp; due-date agenda (.ics export).</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button id="openCalcFromSettings" type="button" class="btn sm">Open Financial Calculator</button>
+                <button id="openCalFromSettings" type="button" class="btn sm ghost">Open Household Calendar</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title">Sync &amp; Storage Engine</h3>
+                <span id="connState" class="mode-pill">Local</span>
+              </div>
+              <p id="connDetail" class="body-single" style="margin-bottom:12px;"></p>
+              <div class="field">
+                <label for="srvUrl">Optional Node Server URL (leave blank for local / built-in)</label>
+                <input id="srvUrl" type="url" placeholder="http://localhost:3000">
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button id="srvSaveBtn" type="button" class="btn sm">Save &amp; Connect</button>
+                <button id="srvTestBtn" type="button" class="btn sm ghost">Test connection</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h3 class="card-title">Account Session</h3></div>
+              <p class="body-single" style="margin-bottom:12px;">Signing out closes your active session token on this browser while preserving saved household ledgers.</p>
+              <button id="signOutBtn" type="button" class="btn danger">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="colophon">
+        <div class="mark">
+          <span class="mark-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="mark-word">H ∈ M · Household Financial Intelligence</span>
+        </div>
+        <span class="mono-meta">H belongs to M — Household belongs to Money Management · Indian Rupee (₹ / en-IN)</span>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Slide-over Theme Control Panel -->
+  <dialog id="themePanel" class="theme-panel" aria-labelledby="themePanelTitle">
+    <div id="themePanelInner" class="theme-panel-inner">
+      <div class="theme-panel-head">
+        <div>
+          <span class="micro-upper">Appearance</span>
+          <h2 id="themePanelTitle" style="margin:2px 0 0;font-family:var(--font-display);font-weight:500;letter-spacing:-0.015em;font-size:24px;">Themes &amp; Editions</h2>
+        </div>
+        <button id="themePanelClose" type="button" class="btn sm ghost">Close ✕</button>
+      </div>
+      <fieldset id="themeList" class="theme-list"></fieldset>
+      <div class="theme-panel-foot">
+        <span id="themeStorageNote" class="mono-meta">Saved on this device</span>
+        <button id="themeReset" type="button" class="btn sm ghost">Restore Original</button>
+      </div>
+      <p id="themeStatus" class="sr-only" aria-live="polite"></p>
+    </div>
+  </dialog>
+
+  <!-- Quick Transaction Modal -->
+  <dialog id="txDialog" class="modal-dlg" aria-labelledby="txDialogTitle">
+    <div class="card-head">
+      <h2 id="txDialogTitle" style="margin:0;font-family:var(--font-display);font-weight:500;letter-spacing:-0.015em;font-size:24px;">Add transaction</h2>
+      <button id="txDialogClose" type="button" class="btn sm ghost">Close ✕</button>
+    </div>
+    <form id="txDialogForm" novalidate>
+      <div class="form-grid">
+        <div class="field"><label for="mId">ID</label><input id="mId" type="number" min="1"></div>
+        <div class="field"><label for="mDate">Date</label><input id="mDate" type="date" required></div>
+        <div class="field"><label for="mMember">Member</label><input id="mMember" type="text" list="dlMembers" required></div>
+        <div class="field">
+          <label for="mType">Type</label>
+          <select id="mType">
+            <option value="EXPENSE">EXPENSE</option>
+            <option value="INCOME">INCOME</option>
+            <option value="LOAN">LOAN</option>
+            <option value="SAVING">SAVING</option>
+          </select>
+        </div>
+        <div class="field"><label for="mCat">Category</label><input id="mCat" type="text" list="dlCategories" required></div>
+        <div class="field"><label for="mPm">Payment Method</label><input id="mPm" type="text" list="dlPms"></div>
+        <div class="field" style="grid-column:1 / -1;"><label for="mDesc">Description</label><input id="mDesc" type="text" list="dlDescs" required></div>
+        <div class="field"><label for="mBudget">Budget (₹)</label><input id="mBudget" type="number" step="0.01" min="0" value="0"></div>
+        <div class="field"><label for="mSpent">Actually Spent (₹)</label><input id="mSpent" type="number" step="0.01" min="0" value="0"></div>
+        <div class="field">
+          <label for="mStatus">Status</label>
+          <select id="mStatus">
+            <option value="PAID">PAID</option>
+            <option value="TO BE PAID">TO BE PAID</option>
+            <option value="Not Necessary">Not Necessary</option>
+          </select>
+        </div>
+        <div class="field"><label for="mDue">Due Date</label><input id="mDue" type="date"></div>
+        <div class="field"><label for="mPaidOn">Paid Date</label><input id="mPaidOn" type="date"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+        <button id="mCancel" type="button" class="btn ghost">Cancel</button>
+        <button id="mSubmit" type="submit" class="btn">Save transaction</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Accessible Confirm Modal -->
+  <dialog id="confirmDialog" class="modal-dlg" aria-labelledby="confirmTitle" style="width:min(420px,calc(100vw - 24px));">
+    <h3 id="confirmTitle" style="margin:0 0 8px;font-family:var(--font-display);font-weight:500;letter-spacing:-0.01em;font-size:22px;">Confirm</h3>
+    <p id="confirmBody" class="body-single" style="margin-bottom:18px;"></p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button id="confirmCancel" type="button" class="btn ghost">Cancel</button>
+      <button id="confirmOk" type="button" class="btn danger">Confirm</button>
+    </div>
+  </dialog>
+
+  <!-- Interactive Household Calendar Modal -->
+  <dialog id="calDialog" class="modal-dlg cal-dlg" aria-labelledby="calDialogTitle"></dialog>
+
+  <!-- Floating Financial Calculator -->
+  <aside id="finCalc" class="fin-calc card" hidden role="dialog" aria-label="Financial Calculator" aria-modal="false"></aside>
+
+  <div id="tt" class="tt" hidden role="tooltip">
+    <div id="ttCat" class="tt-cat"></div>
+    <div id="ttVal" class="tt-val num"></div>
+    <div id="ttSub" class="tt-sub"></div>
+  </div>
+  <div id="liveRegion" class="sr-only" aria-live="polite"></div>
+  <div id="toast" class="toast-host" aria-live="polite"></div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
